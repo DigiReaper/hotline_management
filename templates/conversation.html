@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversation {{ conversation_id }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+        <h1>Cybercrime Hotline - Conversation {{ conversation_id }}</h1>
+    </header>
+    <div class="container">
+        <h2>Transcript</h2>
+        <pre>{{ transcript }}</pre>
+        <h2>Report</h2>
+        <a href="{{ url_for('download_report', conversation_id=conversation_id) }}" class="download-btn">Download Report (PDF)</a>
+    </div>
+</body>
+</html>

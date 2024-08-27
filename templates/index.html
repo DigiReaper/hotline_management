@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cybercrime Conversations</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+        <h1>Cybercrime Hotline - Conversations</h1>
+    </header>
+    <div class="container">
+        <h2>Conversations</h2>
+        <ul>
+            {% for conversation_id in conversations %}
+            <li>
+                <a href="{{ url_for('conversation', conversation_id=conversation_id) }}">
+                    {{ conversation_id }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
