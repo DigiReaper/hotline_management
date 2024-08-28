@@ -33,8 +33,8 @@ def conversation(conversation_id):
 
     # Trigger report generation if not found
     # if not os.path.exists(report_file):
-        # abort(404)
-        # report_file = generate_report_from_transcript(transcript_file, conversation_id, conversation_path)
+    #     # abort(404)
+    #     report_file = generate_report_from_transcript(transcript_file, conversation_id, conversation_path)
 
     return render_template("conversation.html", conversation_id=conversation_id, transcript=transcript, report_file=report_file)
 
@@ -43,8 +43,13 @@ def download_report(conversation_id):
     conversation_path = os.path.join(OUTPUT_DIR, conversation_id)
     report_file = os.path.join(conversation_path, f"report_{conversation_id}.pdf")
 
+    # if not os.path.exists(report_file):
+    #     abort(404)
+    
     if not os.path.exists(report_file):
-        abort(404)
+    # abort(404)
+        transcript_file = os.path.join(conversation_path, "transcript.txt")
+        report_file = generate_report_from_transcript(transcript_file, conversation_id, conversation_path)
 
     return send_file(report_file, as_attachment=True)
 

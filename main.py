@@ -2,6 +2,8 @@ import argparse
 import os
 import threading
 import time
+import tkinter as tk
+from tkinter import scrolledtext
 from conversation_manager import generate_response, create_conversation_directory
 from speech_recognition import record_audio, transcribe_audio
 from text_to_speech import speak_text
@@ -17,9 +19,8 @@ def monitor_stop_signal():
         if keyboard.is_pressed('F3'):
             print("F3 pressed. Stopping the application...")
             stop_signal = True
-            #break
         time.sleep(0.1)
-        
+
 def main(language):
     history = []
     global stop_signal
@@ -62,24 +63,46 @@ def main(language):
     report_path = generate_report(history, conversation_id, conversation_path)
     print(f"Report generated: {report_path}")
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Cybercrime Bot")
-    parser.add_argument('-te', '--telugu', action='store_true', help="Use Telugu language")
-    parser.add_argument('-en', '--english', action='store_true', help="Use English language (default)")
-    parser.add_argument('-hi', '--hindi', action='store_true', help="Use Hindi language")
-
-    args = parser.parse_args()
-    
+def start_conversation(language):
+    global stop_signal
+    stop_signal = False
     stop_thread = threading.Thread(target=monitor_stop_signal)
     stop_thread.start()
-
-    if args.telugu:
-        main('te')
-    elif args.hindi:
-        main('hi')
-    else:
-        main('en')
-        
+    main(language)
     stop_thread.join()
 
-    
+def on_start_button_click(language):
+    threading.Thread(target=start_conversation, args=(language,)).start()
+
+def create_gui():
+    root = tk.Tk()
+    root.title("Cybercrime Bot")
+
+    # Language Selection
+    language_label = tk.Label(root, text="Select Language:")
+    language_label.pack()
+
+    language_var = tk.StringVar(value='en')
+    languages = [("English", 'en'), ("Telugu", 'te'), ("Hindi", 'hi')]
+    for text, lang in languages:
+        tk.Radiobutton(root, text=text, variable=language_var, value=lang).pack()
+
+    # Start Button
+    start_button = tk.Button(root, text="Start Conversation", command=lambda: on_start_button_click(language_var.get()))
+    start_button.pack()
+
+    # Stop Button
+    stop_button = tk.Button(root, text="Stop Conversation", command=lambda: setattr(globals(), 'stop_signal', True))
+    stop_button.pack()
+
+    # Conversation Log
+    log_label = tk.Label(root, text="Conversation Log:")
+    log_label.pack()
+
+    log_text = scrolledtext.ScrolledText(root, wrap=tk.WORD, width=50, height=10)
+    log_text.pack()
+
+    root.mainloop()
+
+if __name__ == "__main__":
+    create_gui()
